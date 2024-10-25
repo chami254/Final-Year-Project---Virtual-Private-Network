@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPN Payment</title>
+    <link rel="stylesheet" href="css/payment.css">
+</head>
+<body>
+    <div class="header">
+        <div class="nav-bar">
+            <div class="logo">
+                <h1>VPN Connection</h1>
+            </div>
+            <div class="nav">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="payment-container">
+        <div class="card" id="payment-card">
+            <!-- Front: PayPal Payment -->
+            <div class="card-side front">
+                <div class="payment-form">
+                    <img src="img/paypal.png">
+                    <h3>Pay with PayPal</h3>
+                    <div id="paypal-button-container">
+                        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                            <input type="hidden" name="cmd" value="_s-xclick" />
+                            <input type="hidden" name="hosted_button_id" value="LRXSDJR4C8LBW" />
+                            <input type="hidden" name="currency_code" value="USD" />
+                            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_subscribe_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Subscribe" />
+                          </form>
+                    </div><br><br><br>
+                    <button class="flip-btn" onclick="flipCard()">Switch to M-Pesa</button>
+                </div>
+            </div>
+
+            <!-- Back: M-Pesa Payment -->
+            <div class="card-side back">
+                <div class="payment-form">
+                    <img src="img/mpesa.png">
+                    <h3>Pay with M-Pesa</h3>
+                    <form action="mpesa_payment.php" method="POST">
+                        <label for="phone">Phone Number:</label>
+                        <input type="text" id="phone" name="phone" required>
+                        <input type="hidden" name="amount" value="10"> <!-- Replace with your amount -->
+                        <button type="submit">Pay with M-Pesa</button>
+                    </form>
+                    <button class="flip-btn" onclick="flipCard()">Switch to PayPal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PayPal SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script>
+    <script>
+        // Initialize PayPal button
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '10.00' // Replace with actual amount
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('Transaction completed by ' + details.payer.name.given_name);
+                    window.location.href = "thank_you.php";
+                });
+            }
+        }).render('#paypal-button-container');
+
+        // Flip card between PayPal and M-Pesa
+        function flipCard() {
+            const card = document.getElementById('payment-card');
+            card.classList.toggle('flip');
+        }
+    </script>
+
+</body>
+</html>

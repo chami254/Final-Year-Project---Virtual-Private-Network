@@ -67,7 +67,7 @@ body {
 }
 
 .nav ul li a:hover {
-    color: #ff6347; /* Changes to a different color on hover */
+    color: #007bff; 
 }
 
 .search-box {
